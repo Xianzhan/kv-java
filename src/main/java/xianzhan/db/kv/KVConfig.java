@@ -1,5 +1,7 @@
 package xianzhan.db.kv;
 
+import java.io.File;
+
 /**
  * kv 配置
  *
@@ -23,7 +25,11 @@ public class KVConfig {
         this.kvType = kvType;
     }
 
+    public String getDir() {
+        return "data";
+    }
+
     public String getDataFileName(String name) {
-        return PREFIX + getKvType() + "-" + name + ".data";
+        return getDir() + File.separator + PREFIX + getKvType() + "-" + name + ".data";
     }
 }

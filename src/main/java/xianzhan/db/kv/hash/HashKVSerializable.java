@@ -1,5 +1,6 @@
 package xianzhan.db.kv.hash;
 
+import xianzhan.db.kv.KVConfig;
 import xianzhan.db.kv.KVFileHeader;
 import xianzhan.db.kv.KVSerializable;
 import xianzhan.db.util.BitUtil;
@@ -19,7 +20,10 @@ import java.util.LinkedHashMap;
  */
 public class HashKVSerializable implements KVSerializable<LinkedHashMap<String, String>, Path> {
 
-    public HashKVSerializable() {
+    private final KVConfig kvConfig;
+
+    public HashKVSerializable(KVConfig kvConfig) {
+        this.kvConfig = kvConfig;
     }
 
     @Override
@@ -58,6 +62,15 @@ public class HashKVSerializable implements KVSerializable<LinkedHashMap<String, 
 
     @Override
     public void write(LinkedHashMap<String, String> map, Path path) {
+        Path dir = Path.of(kvConfig.getDir());
+        if (Files.notExists(dir)) {
+            try {
+                Files.createDirectory(dir);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         try (var bos = Files.newOutputStream(path)) {
             bos.write(BitUtil.getBytes(KVFileHeader.MAGIC_NUMBER));
             var typeNameBytes = "hash".getBytes(StandardCharsets.UTF_8);

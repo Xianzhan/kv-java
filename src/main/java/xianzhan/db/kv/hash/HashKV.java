@@ -32,7 +32,7 @@ public class HashKV implements KV {
         this.config = config;
         this.dataFile = new Path[LEN];
         this.dataMap = new LinkedHashMap[LEN];
-        this.kvSerializable = new HashKVSerializable();
+        this.kvSerializable = new HashKVSerializable(config);
 
         config.setKvType("hash");
     }
