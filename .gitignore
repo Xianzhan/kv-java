@@ -23,7 +23,9 @@
 hs_err_pid*
 
 # data
+data
 *.data
 
 # idea
+.idea
 /target
