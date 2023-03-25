@@ -62,18 +62,10 @@ public class HashKVSerializable implements KVSerializable<LinkedHashMap<String, 
 
     @Override
     public void write(LinkedHashMap<String, String> map, Path path) {
-        Path dir = Path.of(kvConfig.getDir());
-        if (Files.notExists(dir)) {
-            try {
-                Files.createDirectory(dir);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         try (var bos = Files.newOutputStream(path)) {
             bos.write(BitUtil.getBytes(KVFileHeader.MAGIC_NUMBER));
-            var typeNameBytes = "hash".getBytes(StandardCharsets.UTF_8);
+
+            var typeNameBytes = kvConfig.getKvType().getName().getBytes(StandardCharsets.UTF_8);
             bos.write(BitUtil.getBytes(typeNameBytes.length));
             bos.write(typeNameBytes);
             bos.write(BitUtil.getBytes(2023));

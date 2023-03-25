@@ -1,5 +1,6 @@
 package xianzhan.db.kv.hash;
 
+import lombok.extern.slf4j.Slf4j;
 import xianzhan.db.kv.KV;
 import xianzhan.db.kv.KVConfig;
 import xianzhan.db.kv.KVSerializable;
@@ -15,6 +16,7 @@ import java.util.Objects;
  * @author xianzhan
  * @since 2023-03-04
  */
+@Slf4j
 public class HashKV implements KV {
 
     /**
@@ -34,7 +36,7 @@ public class HashKV implements KV {
         this.dataMap = new LinkedHashMap[LEN];
         this.kvSerializable = new HashKVSerializable(config);
 
-        config.setKvType("hash");
+        log.info("KV - HashKV");
     }
 
     Map<String, String> getSlot(String k) {

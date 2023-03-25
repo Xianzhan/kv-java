@@ -1,7 +1,7 @@
 package xianzhan.db;
 
 import xianzhan.db.kv.KVConfig;
-import xianzhan.db.kv.hash.HashKV;
+import xianzhan.db.kv.KVType;
 
 /**
  * 启动类
@@ -12,8 +12,11 @@ import xianzhan.db.kv.hash.HashKV;
 public class Main {
 
     public static void main(String[] args) {
-        var config = new KVConfig();
-        try (var kv = new HashKV(config)) {
+        try (var kv = new KVConfig()
+                .setKvType(KVType.HASH)
+                .init()
+                .build()
+        ) {
             kv.put("1", "one");
             kv.put("2", "two");
 //
