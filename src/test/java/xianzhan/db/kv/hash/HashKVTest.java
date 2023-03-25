@@ -23,6 +23,7 @@ public class HashKVTest {
     public void before() {
         kv = new KVConfig()
                 .setKvType(KVType.HASH)
+                .setVersion(2023)
                 .init()
                 .build();
     }

@@ -1,7 +1,6 @@
 package xianzhan.db.kv.hash;
 
 import xianzhan.db.kv.KVConfig;
-import xianzhan.db.kv.KVFileHeader;
 import xianzhan.db.kv.KVSerializable;
 import xianzhan.db.util.BitUtil;
 
@@ -34,9 +33,10 @@ public class HashKVSerializable implements KVSerializable<LinkedHashMap<String, 
 
         try {
             var bytes = Files.readAllBytes(path);
-            var len = bytes.length;
-            var header = KVFileHeader.read(bytes);
+            var header = this.kvConfig.getKvFileHeader();
+            header.read(bytes);
 
+            var len = bytes.length;
             var off = header.lastOff();
             while (off < len) {
                 var keyLen = BitUtil.getInt(bytes, off);
@@ -63,12 +63,7 @@ public class HashKVSerializable implements KVSerializable<LinkedHashMap<String, 
     @Override
     public void write(LinkedHashMap<String, String> map, Path path) {
         try (var bos = Files.newOutputStream(path)) {
-            bos.write(BitUtil.getBytes(KVFileHeader.MAGIC_NUMBER));
-
-            var typeNameBytes = kvConfig.getKvType().getName().getBytes(StandardCharsets.UTF_8);
-            bos.write(BitUtil.getBytes(typeNameBytes.length));
-            bos.write(typeNameBytes);
-            bos.write(BitUtil.getBytes(2023));
+            this.kvConfig.getKvFileHeader().write(bos);
 
             map.forEach((k, v) -> {
                 try {

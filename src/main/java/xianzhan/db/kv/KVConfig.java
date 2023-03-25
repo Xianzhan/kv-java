@@ -23,8 +23,16 @@ public class KVConfig {
     /**
      * KV 实现类型
      */
-    private KVType  kvType;
-    private boolean init;
+    private KVType       kvType;
+    /**
+     * KV 文件头
+     */
+    private KVFileHeader kvFileHeader;
+    /**
+     * KV 版本号
+     */
+    private int          version;
+    private boolean      init;
 
     public KVConfig() {
     }
@@ -39,6 +47,21 @@ public class KVConfig {
         return kvType;
     }
 
+    public KVFileHeader getKvFileHeader() {
+        checkInit();
+        return kvFileHeader;
+    }
+
+    public KVConfig setVersion(int version) {
+        this.version = version;
+        return this;
+    }
+
+    public int getVersion() {
+        checkInit();
+        return version;
+    }
+
     public String getDataFileName(String name) {
         checkInit();
         return getDir() + File.separator + PREFIX + getKvType() + "-" + name + ".data";
@@ -48,13 +71,14 @@ public class KVConfig {
         if (init) {
             throw new IllegalStateException("配置已初始化");
         }
+        this.init = true;
+
         if (kvType == null) {
             throw new IllegalArgumentException("kvType 未配置");
         }
 
         initDir();
-
-        this.init = true;
+        initHeader();
         return this;
     }
 
@@ -75,6 +99,10 @@ public class KVConfig {
         } catch (IOException e) {
             throw new RuntimeException("创建目录异常 dir: " + dir, e);
         }
+    }
+
+    private void initHeader() {
+        this.kvFileHeader = new KVFileHeader(this);
     }
 
     public KV build() {
